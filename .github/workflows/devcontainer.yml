@@ -1,0 +1,32 @@
+name: Generation Dev Container Base Image
+
+on:
+  push:
+    branch:
+      - 'main'
+    paths:
+      - '.devcontainer/base.Dockerfile'
+      - 'library-scripts/**/*'
+
+jobs:
+  devcontainer:
+    name: Generate cache image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v2
+
+      - name: Build and push dev container image
+        id: build_and_push
+        run: |
+          set -e
+          CONTAINER_IMAGE_REGISTRY=ghcr.io
+          REPOSITORY_PATH=codespaces-contrib/demo/dependency-caching
+          IMAGE_ID="${CONTAINER_IMAGE_REGISTRY}/${REPOSITORY_PATH}" 
+
+          echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin 
+          cd .devcontainer
+          docker build -t "${IMAGE_ID}:latest" -f "base.Dockerfile" .
+          docker push "${IMAGE_ID}:latest"
+
