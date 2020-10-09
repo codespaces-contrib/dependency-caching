@@ -25,7 +25,7 @@ jobs:
           REPOSITORY_PATH=codespaces-contrib/demo/dependency-caching
           IMAGE_ID="${CONTAINER_IMAGE_REGISTRY}/${REPOSITORY_PATH}" 
 
-          echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin 
+          echo "${{ secrets.GHCR_PAT }}" | docker login ${CONTAINER_IMAGE_REGISTRY} -u "${{ secrets.GHCR_USER }}" --password-stdin 
           cd .devcontainer
           docker build -t "${IMAGE_ID}:latest" -f "base.Dockerfile" .
           docker push "${IMAGE_ID}:latest"
