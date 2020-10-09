@@ -31,6 +31,6 @@ jobs:
 
           GIT_BRANCH=$(echo "${{ github.ref }}" | grep -oP 'refs/(heads|tags)/\K(.+)')
           if [ "$GIT_BRANCH" == "" ]; then GIT_BRANCH=master; fi
-          echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin 
+          echo "${{ secrets.GHCR_PAT }}" | docker login "${CONTAINER_IMAGE_REGISTRY}" -u "${{ secrets.GHCR_USER }}" --password-stdin 
           .devcontainer/cache/build-cache-image.sh "${IMAGE_ID}" "${IMAGE_ID}" "${GIT_BRANCH}" "node"
 
