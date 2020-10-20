@@ -4,11 +4,11 @@ on:
   push:
     # Update this to build images for other branches
     branch:
+      - 'devcontainer-test'
       - 'main'
 
     # Update this list of there are other files you want to watch to do cache updates
     paths:
-      - '**/package.json'
       - '**/package-lock.json'
       - '**/yarn.lock'
 
@@ -27,10 +27,15 @@ jobs:
           set -e
           CONTAINER_IMAGE_REGISTRY=ghcr.io
           REPOSITORY_PATH=codespaces-contrib/demo/dependency-caching
-          IMAGE_ID="${CONTAINER_IMAGE_REGISTRY}/${REPOSITORY_PATH}" 
+          BRANCH_TAG="base-clantz-sample-wip"
+          BASE_IMAGE_ID="${CONTAINER_IMAGE_REGISTRY}/${REPOSITORY_PATH}:${BRANCH_TAG}"
 
-          GIT_BRANCH=$(echo "${{ github.ref }}" | grep -oP 'refs/(heads|tags)/\K(.+)')
-          if [ "$GIT_BRANCH" == "" ]; then GIT_BRANCH=master; fi
           echo "${{ secrets.GHCR_PAT }}" | docker login "${CONTAINER_IMAGE_REGISTRY}" -u "${{ secrets.GHCR_USER }}" --password-stdin 
-          .devcontainer/cache/build-cache-image.sh "${IMAGE_ID}" "${IMAGE_ID}" "${GIT_BRANCH}" "node"
+          .devcontainer/cache/build-cache-image.sh "${BASE_IMAGE_ID}" "${BASE_IMAGE_ID}" "node" "." "true" "image"
 
+          git config --global user.email "noreply@github.com"
+          git config --global user.name "CI"
+          git add .devcontainer/devcontainer.json
+          git commit -am 'Automated devcontainer.json update' \
+            && git push \
+            || echo 'No updates to devcontainer.json'

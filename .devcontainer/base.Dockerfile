@@ -3,7 +3,6 @@ FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-12
 COPY library-scripts/desktop-lite-debian.sh /tmp/library-scripts/
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 	&& bash /tmp/library-scripts/desktop-lite-debian.sh \
-	&& sed -i -E 's/.*Terminal.*/    [exec] (Terminal) { tilix -w ~ -e $(readlink -f \/proc\/$$\/exe) -il } <>\n    [exec] (Start Code - OSS) { tilix -t "Code - OSS Build" -e bash \/home\/node\/workspace\/vscode*\/scripts\/code.sh  } <>/' /home/node/.fluxbox/menu \
 	&& apt-get -y install firefox-esr \
 	&& apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts/
 
@@ -20,3 +19,4 @@ ENV DBUS_SESSION_BUS_ADDRESS="autolaunch:" \
 
 ENTRYPOINT ["/usr/local/share/desktop-init.sh"]
 CMD ["sleep", "infinity"]
+

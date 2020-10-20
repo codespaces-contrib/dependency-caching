@@ -13,11 +13,14 @@ CACHE_FOLDER="${2:-"/usr/local/etc/devcontainer-cache"}"
 echo "[$(date)] Starting cache operation..."
 cd "${SOURCE_FOLDER}"
 
-echo "[$(date)] Determining diffs..."
-find -L . -not -path "*/.git/*" -and -not -path "${SCRIPT_PATH}/*.manifest" -type f > "${SCRIPT_PATH}/after.manifest"
-grep -Fxvf  "${SCRIPT_PATH}/before.manifest" "${SCRIPT_PATH}/after.manifest" > "${SCRIPT_PATH}/cache.manifest"
-
-echo "[$(date)] Archiving diffs..."
+echo "[$(date)] Determining changes..."
+find -L . \
+    -not -path "*/.git/*" \
+    -and -not -path "./$(realpath --relative-to='.' "${SCRIPT_PATH}")/*.manifest" \
+    -type f \
+    -newer "${SCRIPT_PATH}/before-date.manifest" > "${SCRIPT_PATH}/cache.manifest"
+echo "[$(date)] Found $(wc -l < "${SCRIPT_PATH}/cache.manifest") changes..."
+echo "[$(date)] Archiving changes..."
 mkdir -p "${CACHE_FOLDER}"
 tar -cf "${CACHE_FOLDER}/cache.tar" --totals --files-from "${SCRIPT_PATH}/cache.manifest"
 

@@ -4,7 +4,7 @@
 	// The image property points to the resulting image with dependencies cached in it. To develop the
 	// base image instead, comment out the image property line and uncomment this build property line.
 	// "build": { "dockerfile": "base.Dockerfile" }
-	"image": "ghcr.io/codespaces-contrib/demo/dependency-caching:main",
+	"image": "ghcr.io/codespaces-contrib/demo/dependency-caching:commit-baa2d3667e152ec",
 
 	// This script optionally loads a cached yarn install for the repo
 	"postCreateCommand": ".devcontainer/cache/restore-diff.sh",
