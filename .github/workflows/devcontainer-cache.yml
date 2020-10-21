@@ -27,7 +27,8 @@ jobs:
           set -e
           CONTAINER_IMAGE_REGISTRY=ghcr.io
           REPOSITORY_PATH=codespaces-contrib/demo/dependency-caching
-          BRANCH_TAG="base-clantz-sample-wip"
+          BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+          BRANCH_TAG="base-${BRANCH//\//-}"
           BASE_IMAGE_ID="${CONTAINER_IMAGE_REGISTRY}/${REPOSITORY_PATH}:${BRANCH_TAG}"
 
           echo "${{ secrets.GHCR_PAT }}" | docker login "${CONTAINER_IMAGE_REGISTRY}" -u "${{ secrets.GHCR_USER }}" --password-stdin 
